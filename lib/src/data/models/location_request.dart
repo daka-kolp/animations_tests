@@ -1,7 +1,7 @@
 import 'package:ram_app/src/data/consts/field_names.dart' as fn;
 import 'package:ram_app/src/domain/entities/location.dart';
 
-class LocationRequest extends Location {
+class LocationModel extends Location {
   final int id;
   final String name;
   final String type;
@@ -10,7 +10,7 @@ class LocationRequest extends Location {
   final String url;
   final String created;
 
-  LocationRequest({
+  LocationModel({
     this.id,
     this.name,
     this.type,
@@ -22,12 +22,12 @@ class LocationRequest extends Location {
 
   DateTime get dateTimeCreated => DateTime.tryParse(created);
 
-  factory LocationRequest.fromJson(Map<String, dynamic> json) =>
+  factory LocationModel.fromJson(Map<String, dynamic> json) =>
       _$LocationModelFromJson(json);
 }
 
-LocationRequest _$LocationModelFromJson(Map<String, dynamic> json) {
-  return LocationRequest(
+LocationModel _$LocationModelFromJson(Map<String, dynamic> json) {
+  return LocationModel(
       id: json[fn.id] as int,
       name: json[fn.name] as String,
       type: json[fn.type] as String,

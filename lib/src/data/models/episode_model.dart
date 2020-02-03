@@ -1,8 +1,8 @@
 import 'package:ram_app/src/data/consts/field_names.dart' as fn;
 import 'package:ram_app/src/domain/entities/episode.dart';
 
-class EpisodeRequest extends Episode {
-  EpisodeRequest({
+class EpisodeModel extends Episode {
+  EpisodeModel({
     int id,
     String name,
     String airDate,
@@ -22,11 +22,11 @@ class EpisodeRequest extends Episode {
 
   DateTime get dateTimeCreated => DateTime.tryParse(created);
 
-  factory EpisodeRequest.fromJson(Map<String, dynamic> json) =>
-      _$EpisodeFromJson(json);
+  factory EpisodeModel.fromJson(Map<String, dynamic> json) =>
+      _$EpisodeModelFromJson(json);
 }
 
-Episode _$EpisodeFromJson(Map<String, dynamic> json) {
+Episode _$EpisodeModelFromJson(Map<String, dynamic> json) {
   return Episode(
       id: json[fn.id] as int,
       name: json[fn.name] as String,

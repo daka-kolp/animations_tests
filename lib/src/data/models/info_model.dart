@@ -1,24 +1,24 @@
 import 'package:ram_app/src/data/consts/field_names.dart' as fn;
 
-class InfoRequest {
+class InfoModel {
   final int count;
   final int pages;
   final String next;
   final String prev;
 
-  InfoRequest({
+  InfoModel({
     this.count,
     this.pages,
     this.next,
     this.prev,
   });
 
-  factory InfoRequest.fromJson(Map<String, dynamic> json) =>
-      _$InfoRequestFromJson(json);
+  factory InfoModel.fromJson(Map<String, dynamic> json) =>
+      _$InfoModelFromJson(json);
 }
 
-InfoRequest _$InfoRequestFromJson(Map<String, dynamic> json) {
-  return InfoRequest(
+InfoModel _$InfoModelFromJson(Map<String, dynamic> json) {
+  return InfoModel(
       count: json[fn.count] as int,
       pages: json[fn.pages] as int,
       next: json[fn.next] as String,

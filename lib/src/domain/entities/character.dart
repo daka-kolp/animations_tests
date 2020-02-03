@@ -39,7 +39,6 @@ class SimpleLocation {
 
   SimpleLocation({
     @required this.name,
-    @required this.url,
-  })  : assert(name != null),
-        assert(url != null);
+    this.url,
+  })  : assert(name != null);
 }

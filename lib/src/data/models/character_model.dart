@@ -1,9 +1,9 @@
 import 'package:ram_app/src/data/consts/field_names.dart' as fn;
 import 'package:ram_app/src/domain/entities/character.dart';
 
-class CharacterRequest extends Character {
-  CharacterRequest({
-    int id,
+class CharacterModel extends Character {
+  CharacterModel({
+    String id,
     String name,
     String status,
     String species,
@@ -12,11 +12,10 @@ class CharacterRequest extends Character {
     SimpleLocation origin,
     SimpleLocation location,
     String image,
-    List<String> episode,
     String url,
     String created,
   }) : super(
-          id: id,
+          id: int.parse(id),
           name: name,
           status: status,
           species: species,
@@ -25,17 +24,17 @@ class CharacterRequest extends Character {
           origin: origin,
           location: location,
           image: image,
-          episode: episode,
+
           url: url,
           created: created,
         );
 
-  factory CharacterRequest.fromJson(Map<String, dynamic> json) =>
-      _$CharacterRequestFromJson(json);
+  factory CharacterModel.fromJson(Map<String, dynamic> json) =>
+      _$CharacterModelFromJson(json);
 }
 
-class SimpleLocationRequest extends SimpleLocation {
-  SimpleLocationRequest({
+class SimpleLocationModel extends SimpleLocation {
+  SimpleLocationModel({
     String name,
     String url,
   }) : super(
@@ -43,29 +42,28 @@ class SimpleLocationRequest extends SimpleLocation {
           url: url,
         );
 
-  factory SimpleLocationRequest.fromJson(Map<String, dynamic> json) =>
-      _$SimpleLocationRequestFromJson(json);
+  factory SimpleLocationModel.fromJson(Map<String, dynamic> json) =>
+      _$SimpleLocationModelFromJson(json);
 }
 
-CharacterRequest _$CharacterRequestFromJson(Map<String, dynamic> json) {
-  return CharacterRequest(
-    id: json[fn.id] as int,
+CharacterModel _$CharacterModelFromJson(Map<String, dynamic> json) {
+  return CharacterModel(
+    id: json[fn.id] as String,
     name: json[fn.name] as String,
     status: json[fn.status] as String,
     species: json[fn.species] as String,
     type: json[fn.type] as String,
     gender: json[fn.gender] as String,
-    origin: SimpleLocationRequest.fromJson(json[fn.origin] as Map<String, dynamic>),
-    location: SimpleLocationRequest.fromJson(json[fn.location] as Map<String, dynamic>),
+    origin: SimpleLocationModel.fromJson(json[fn.origin] as Map<String, dynamic>),
+    location: SimpleLocationModel.fromJson(json[fn.location] as Map<String, dynamic>),
     image: json[fn.image] as String,
-    episode: (json[fn.episode] as List).map((e) => e as String).toList(),
     url: json[fn.url] as String,
     created: json[fn.created] as String,
   );
 }
 
-SimpleLocationRequest _$SimpleLocationRequestFromJson(Map<String, dynamic> json) {
-  return SimpleLocationRequest(
+SimpleLocationModel _$SimpleLocationModelFromJson(Map<String, dynamic> json) {
+  return SimpleLocationModel(
     name: json[fn.name] as String,
     url: json[fn.url] as String,
   );
