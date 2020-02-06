@@ -1,196 +1,79 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:ram_app/src/app/pages/description_page.dart';
+import 'package:ram_app/src/app/pages/main_page_change_notifier.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverPersistentHeader(
-            delegate: RaMSliverAppBarDelegate(),
-            pinned: true,
-          ),
-//          SliverToBoxAdapter(
-//            child: Center(
-//              child: Container(
-//                margin: EdgeInsets.symmetric(
-//                  vertical: 32.0,
-//                ),
-//                width: 200.0,
-//                child: ClipRRect(
-//                  borderRadius: BorderRadius.all(
-//                    Radius.circular(16.0),
-//                  ),
-//                  child: Column(
-//                    mainAxisSize: MainAxisSize.min,
-//                    children: <Widget>[
-//                      _buildTop(context),
-//                      _buildTile(context, 'status', 'Dead'),
-//                      Divider(height: 0.0),
-//                      _buildTile(context, 'species', 'Humanoid'),
-//                      Divider(height: 0.0),
-//                      _buildTile(context, 'gender', 'Male'),
-//                      Divider(height: 0.0),
-//                      _buildTile(context, 'origin', 'Alien Spa'),
-//                      Divider(height: 0.0),
-//                      _buildTile(context, 'last location', 'Earth'),
-//                    ],
-//                  ),
-//                ),
-//              ),
-//            ),
-//          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-            ]),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTop(BuildContext context) {
-    return Stack(
-      children: [
-        Image.network(
-          'https://rickandmortyapi.com/api/character/avatar/361.jpeg',
-          fit: BoxFit.cover,
-        ),
-        Positioned(
-          bottom: 0.0,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            color: Colors.black87,
-            height: 46,
-            width: 300,
-            child: Text(
-              'Toxic Rick',
-              style: Theme.of(context)
-                  .textTheme
-                  .title
-                  .copyWith(color: Colors.white),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTile(BuildContext context, String name, String value) {
-    return Container(
-      color: Colors.grey[800],
-      height: 36,
-      width: 300,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  name.toUpperCase(),
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        color: Colors.grey,
-                      ),
-                ),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.subhead.copyWith(
-                        color: Colors.orange,
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class RaMSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+class _MainScreenState extends State<MainScreen> {
+  final _controller = ScrollController();
+
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Stack(
-      children: <Widget>[
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF1EC9E8).withOpacity(0.6),
-                  Color(0xFFA7E541).withOpacity(0.6)
-                ],
-              ),
-            ),
-          ),
-        ),
-        Container(
-          width: shrinkOffset < 140
-              ? MediaQuery.of(context).size.width / 2
-              : MediaQuery.of(context).size.width,
-          margin: EdgeInsets.only(left: 35.0, top: 24),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Main",
-            softWrap: true,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 26 - shrinkOffset / kToolbarHeight * 2,
-            ),
-          ),
-        ),
-      ],
+  void initState() {
+    super.initState();
+    _controller.addListener(
+      () {
+        if (_controller.position.pixels >=
+            _controller.position.maxScrollExtent) {
+          Provider.of<MainPageChangeNotifier>(context, listen: false)
+              .loadCharacters();
+        }
+      },
     );
   }
 
   @override
-  double get maxExtent => 250.0;
-
-  @override
-  double get minExtent => kToolbarHeight * 2;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
-
-  @override
-  OverScrollHeaderStretchConfiguration get stretchConfiguration =>
-      OverScrollHeaderStretchConfiguration(
-        stretchTriggerOffset: 20000,
-        onStretchTrigger: () async => print('asd'),
-      );
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Rick'n'Morty's characters"),
+          centerTitle: true,
+        ),
+        body: CustomScrollView(
+          controller: _controller,
+          slivers: <Widget>[
+            Consumer<MainPageChangeNotifier>(
+                builder: (context, notifier, child) {
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                            '${notifier.characters[index].name}',
+                          ),
+                          onTap: () =>
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) => DescriptionPageAnimator(
+                                        character: notifier.characters[index],
+                                      ))),
+                        ),
+                        Divider(height: 1.0)
+                      ],
+                    );
+                  },
+                  childCount: notifier.characters.length,
+                ),
+              );
+            }),
+            if (Provider.of<MainPageChangeNotifier>(context).isLoading)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }

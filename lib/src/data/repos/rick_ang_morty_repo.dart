@@ -3,31 +3,23 @@ import 'package:ram_app/src/data/models/characters_model.dart';
 import 'package:ram_app/src/device/utils/graph_ql_client.dart';
 import 'package:ram_app/src/domain/entities/character.dart';
 
-class RaMRepo{
-  int _page;
+class RaMRepo {
 
-  List<Character> _characters = [];
-
-  List<Character> get characters => _characters;
-
-  RaMRepo() : _page = 1;
-
-  Future<void> getCharacters() async {
-    final result = await graphQLClient.query(_queryOptions());
-    print(result.data['characters']);
+  Future<List<Character>> getCharacters(int page) async {
+    final result = await graphQLClient.query(_queryOptions(page));
 
     final responseModel = CharactersModel.fromJson(result.data['characters']);
     final info = responseModel.info;
-    if(_page < info.count){
-      _page += 1;
+    if(page < info.count){
+      return responseModel.results;
     }
-    return responseModel.results;
+    return [];
   }
 
-  QueryOptions _queryOptions() => QueryOptions(
+  QueryOptions _queryOptions(int page) => QueryOptions(
     documentNode: gql(fetchCharacters),
     variables: <String, dynamic>{
-      'page': _page,
+      'page': page,
     },
   );
 }
