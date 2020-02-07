@@ -38,18 +38,19 @@ class _PaperAnimatorState extends State<PaperAnimator>
           _controller.forward();
         }
       },
-      child: Envelope(
+      child: Paper(
         controller: _controller,
       ),
     );
   }
 }
 
-class Envelope extends StatelessWidget {
-  final EnvelopeAnimation envelopeController;
+class Paper extends StatelessWidget {
+  final PaperAnimation envelopeController;
+  final double size = 360;
 
-  Envelope({Key key, AnimationController controller})
-      : envelopeController = EnvelopeAnimation(controller),
+  Paper({Key key, AnimationController controller})
+      : envelopeController = PaperAnimation(controller),
         super(key: key);
 
   @override
@@ -58,7 +59,7 @@ class Envelope extends StatelessWidget {
       body: Center(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 100),
-          width: 360,
+          width: size,
           height: MediaQuery.of(context).size.height,
           child: AnimatedBuilder(
               animation: envelopeController.controller,
@@ -66,19 +67,13 @@ class Envelope extends StatelessWidget {
                 if (envelopeController.controller.value < 0.5) {
                   return Stack(
                     children: <Widget>[
-                      _center(),
+                      _centerStatic(),
                       _left(),
                       _right(),
                     ],
                   );
                 } else {
-                  return Stack(
-                    children: <Widget>[
-//                      _right(),
-//                      _left(),
-                      _center(),
-                    ],
-                  );
+                  return _centerAnimated();
                 }
               }),
         ),
@@ -86,142 +81,75 @@ class Envelope extends StatelessWidget {
     );
   }
 
-  Widget _center() {
+  Widget _centerStatic() {
     return Positioned(
-      right: 80,
-//      child: Container(
-//        width: 200,
-//        height: 360,
-//        color: Colors.blue,
-//      ),
+      left: 80,
+      child: Column(
+        children: <Widget>[
+          _buildCenterTop(),
+          _buildCenter(),
+          _buildCenterBottom(),
+        ],
+      ),
+    );
+  }
+
+  Widget _centerAnimated() {
+    return Center(
       child: Column(
         children: <Widget>[
           Stack(
             children: <Widget>[
-              Container(
-                width: 200,
-                height: 120,
-                color: Colors.blue,
-              ),
+              _buildCenterTop(),
               if (envelopeController.controller.value < 1.0 &&
                   envelopeController.controller.value > 0.5)
                 Positioned(
                   right: 0.0,
-                  child: Container(
-                    width: 80,
-                    height: 120,
-                    color: Colors.blue[800],
-                  ),
+                  child: _buildRightTop(),
                 ),
               if (envelopeController.controller.value < 1.0 &&
                   envelopeController.controller.value > 0.5)
                 Positioned(
                   left: 0.0,
-                  child: Container(
-                    width: 80,
-                    height: 120,
-                    color: envelopeController.controller.value < 0.375
-                        ? Colors.blue
-                        : Colors.blue[800],
-                  ),
+                  child: _buildLeftTop()
                 ),
             ],
           ),
-          Transform(
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateX(-envelopeController.bottomTwoAnimation.value * pi),
+          _bottomTwoAnimation(
             child: Stack(
               children: <Widget>[
-                if (envelopeController.controller.value < 0.75 &&
-                    envelopeController.controller.value > 0.5)
-                  Positioned(
-                    right: 0.0,
-                    child: Container(
-                      width: 80,
-                      height: 120,
-                      color: Colors.blue[800],
-                    ),
-                  ),
+                _buildCenter(),
                 if (envelopeController.controller.value < 0.75 &&
                     envelopeController.controller.value > 0.5)
                   Positioned(
                     left: 0.0,
-                    child: Container(
-                      width: 80,
-                      height: 120,
-                      color: envelopeController.controller.value < 0.375
-                          ? Colors.blue
-                          : Colors.blue[800],
-                    ),
+                    child: _buildLeftCenter(),
                   ),
-                Container(
-                  width: 200,
-                  height: 120,
-                  color: envelopeController.controller.value < 0.75
-                      ? Colors.blue
-                      : Colors.blue[900],
-                ),
                 if (envelopeController.controller.value < 0.75 &&
                     envelopeController.controller.value > 0.5)
                   Positioned(
                     right: 0.0,
-                    child: Container(
-                      width: 80,
-                      height: 120,
-                      color: Colors.blue[800],
-                    ),
+                    child: _buildRightCenter(),
                   ),
-                if (envelopeController.controller.value < 0.75 &&
-                    envelopeController.controller.value > 0.5)
-                  Positioned(
-                    left: 0.0,
-                    child: Container(
-                      width: 80,
-                      height: 120,
-                      color: envelopeController.controller.value < 0.375
-                          ? Colors.blue
-                          : Colors.blue[800],
-                    ),
-                  )
               ],
             ),
           ),
           if (envelopeController.controller.value < 0.75)
-            Transform(
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
-                ..rotateX(-envelopeController.bottomOneAnimation.value * pi),
+            _bottomOneAnimation(
               child: Stack(
                 children: <Widget>[
-                  Container(
-                    width: 200,
-                    height: 120,
-                    color: envelopeController.controller.value < 0.625
-                        ? Colors.blue
-                        : Colors.blue[900],
-                  ),
-                  if (envelopeController.controller.value < 0.625 &&
-                      envelopeController.controller.value > 0.5)
-                    Positioned(
-                      right: 0.0,
-                      child: Container(
-                        width: 80,
-                        height: 120,
-                        color: Colors.blue[800],
-                      ),
-                    ),
+                  _buildCenterBottom(),
                   if (envelopeController.controller.value < 0.625 &&
                       envelopeController.controller.value > 0.5)
                     Positioned(
                       left: 0.0,
-                      child: Container(
-                        width: 80,
-                        height: 120,
-                        color: envelopeController.controller.value < 0.375
-                            ? Colors.blue
-                            : Colors.blue[800],
-                      ),
+                      child: _buildLeftBottom(),
+                    ),
+                  if (envelopeController.controller.value < 0.625 &&
+                      envelopeController.controller.value > 0.5)
+                    Positioned(
+                      right: 0.0,
+                      child: _buildRightBottom(),
                     ),
                 ],
               ),
@@ -231,89 +159,149 @@ class Envelope extends StatelessWidget {
     );
   }
 
-  Widget _right() {
+  Widget _left() {
     return Positioned(
-      right: 0.0,
-      child: Transform(
-        transform: Matrix4.identity()
-          ..setEntry(3, 2, 0.001)
-          ..rotateY(envelopeController.leftAnimation.value * pi),
-        alignment: Alignment.centerLeft,
+      left: 0.0,
+      child: _leftAnimation(
         child: Column(
           children: <Widget>[
-            Container(
-              width: 80,
-              height: 120,
-              color: envelopeController.controller.value < 0.125
-                  ? Colors.blue
-                  : Colors.blue[800],
-            ),
-            Container(
-              width: 80,
-              height: 120,
-              color: envelopeController.controller.value < 0.125
-                  ? Colors.blue
-                  : Colors.blue[800],
-            ),
-            Container(
-              width: 80,
-              height: 120,
-              color: envelopeController.controller.value < 0.125
-                  ? Colors.blue
-                  : Colors.blue[800],
-            ),
+            _buildLeftTop(),
+            _buildLeftCenter(),
+            _buildLeftBottom(),
           ],
         ),
       ),
     );
   }
 
-  Widget _left() {
+  Widget _leftAnimation({Widget child}) {
+    return Transform(
+      alignment: Alignment.centerRight,
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(-envelopeController.leftAnimation.value * pi),
+      child: child,
+    );
+  }
+
+  Widget _right() {
     return Positioned(
-      left: 0.0,
-      child: Transform(
-        alignment: Alignment.centerRight,
-        transform: Matrix4.identity()
-          ..setEntry(3, 2, 0.001)
-          ..rotateY(-envelopeController.rightAnimation.value * pi),
+      right: 0.0,
+      child: _rightAnimation(
         child: Column(
           children: <Widget>[
-            Container(
-              width: 80,
-              height: 120,
-              color: envelopeController.controller.value < 0.375
-                  ? Colors.blue
-                  : Colors.blue[800],
-            ),
-            Container(
-              width: 80,
-              height: 120,
-              color: envelopeController.controller.value < 0.375
-                  ? Colors.blue
-                  : Colors.blue[800],
-            ),
-            Container(
-              width: 80,
-              height: 120,
-              color: envelopeController.controller.value < 0.375
-                  ? Colors.blue
-                  : Colors.blue[800],
-            ),
+            _buildRightTop(),
+            _buildRightCenter(),
+            _buildRightBottom(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _rightAnimation({Widget child}) {
+    return Transform(
+      alignment: Alignment.centerLeft,
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(envelopeController.rightAnimation.value * pi),
+      child: child,
+    );
+  }
+
+  Widget _buildLeftTop() {
+    return _leftPart();
+  }
+
+  Widget _buildLeftCenter() {
+    return _leftPart();
+  }
+
+  Widget _buildLeftBottom() {
+    return _leftPart();
+  }
+
+  Widget _buildCenterTop() {
+    return _centerPart(true);
+  }
+
+  Widget _buildCenter() {
+    return _centerPart(envelopeController.controller.value < 0.75);
+  }
+
+  Widget _buildCenterBottom() {
+    return _centerPart(envelopeController.controller.value < 0.625);
+  }
+
+  Widget _buildRightTop() {
+    return _rightPart();
+  }
+
+  Widget _buildRightCenter() {
+    return _rightPart();
+  }
+
+  Widget _buildRightBottom() {
+    return _rightPart();
+  }
+
+  Widget _leftPart() {
+    return Container(
+      width: 80,
+      height: 120,
+      color: envelopeController.controller.value < 0.125
+          ? Colors.blue
+          : Colors.blue[800],
+    );
+  }
+
+  Widget _rightPart() {
+    return Container(
+      width: 80,
+      height: 120,
+      color: envelopeController.controller.value < 0.375
+          ? Colors.blue
+          : Colors.blue[800],
+    );
+  }
+
+  Widget _centerPart(bool isLightSize) {
+    return Container(
+      width: 200,
+      height: 120,
+      color: isLightSize ? Colors.blue : Colors.blue[700],
+    );
+  }
+
+  Widget _bottomOneAnimation({Widget child}) {
+    return Transform(
+      alignment: Alignment.topCenter,
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateX(-envelopeController.bottomOneAnimation.value * pi),
+      child: child,
+    );
+  }
+
+  Widget _bottomTwoAnimation({Widget child}) {
+    return Transform(
+      alignment: Alignment.topCenter,
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateX(-envelopeController.bottomTwoAnimation.value * pi),
+      child: child,
     );
   }
 }
 
-class EnvelopeAnimation {
+class PaperAnimation {
   final AnimationController controller;
   final Animation<double> rightAnimation;
   final Animation<double> leftAnimation;
   final Animation<double> bottomOneAnimation;
   final Animation<double> bottomTwoAnimation;
 
-  EnvelopeAnimation(this.controller)
+  PaperAnimation(this.controller)
       : leftAnimation = _createAnimation(controller, 0.0, 0.25),
         rightAnimation = _createAnimation(controller, 0.25, 0.5),
         bottomOneAnimation = _createAnimation(controller, 0.5, 0.75),

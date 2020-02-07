@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ram_app/src/app/pages/paper.dart';
-import 'package:ram_app/src/app/pages/paper_ 1.dart';
 import 'package:ram_app/theme.dart';
 
 void main() => runApp(MyApp());
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
         MaterialApp(
       title: 'Rick&Morty',
       theme: RaMTheme().themeData,
-      home: EnvelopeAnimator(),
+      home: PaperAnimator(),
 //            home: MainScreen(),
       /*),
         ),
