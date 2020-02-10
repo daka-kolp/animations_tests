@@ -13,6 +13,7 @@ class RaMTheme {
       : _themeData = ThemeData(
           brightness: Brightness.light,
           fontFamily: 'GloriaHallelujah',
+//          fontFamily: 'OpenSans',
           primarySwatch: _materialColor,
           accentColor: _accentColor,
           canvasColor: Color(0xFFFFFCBB),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ram_app/src/app/pages/paper.dart';
+import 'package:ram_app/src/app/pages/info_paper.dart';
 import 'package:ram_app/theme.dart';
 
 void main() => runApp(MyApp());
@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
           create: (context) => MainPageChangeNotifier(),
           child:*/
         MaterialApp(
-      title: 'Rick&Morty',
-      theme: RaMTheme().themeData,
-      home: PaperAnimator(),
+          title: 'Rick&Morty',
+          theme: RaMTheme().themeData,
+          home: InfoPaper(),
 //            home: MainScreen(),
       /*),
         ),

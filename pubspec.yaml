@@ -22,6 +22,7 @@ flutter:
 
   assets:
     - logo.png
+    - open_eyes.png
 
   fonts:
     - family: GloriaHallelujah
