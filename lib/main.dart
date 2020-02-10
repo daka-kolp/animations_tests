@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         MaterialApp(
           title: 'Rick&Morty',
           theme: RaMTheme().themeData,
-          home: InfoPaper(),
+          home: InfoPaperAnimator(),
 //            home: MainScreen(),
       /*),
         ),

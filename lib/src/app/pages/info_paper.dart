@@ -465,6 +465,13 @@ class ContentWidget extends StatelessWidget {
           )
         ],
       ),
+//      child: Container(
+//        margin: EdgeInsets.all(26.0),
+//        child: Image.asset(
+//          'qr1_example.png',
+//          fit: BoxFit.fill,
+//        ),
+//      ),
     );
   }
 }
