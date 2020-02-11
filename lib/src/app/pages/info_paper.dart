@@ -68,10 +68,10 @@ class InfoPaper extends StatelessWidget {
                 return Stack(
                   children: <Widget>[
                     _centerStatic(),
-                    _left1(),
-                    _left2(),
-                    _right1(),
-                    _right2(),
+                    _buildLeftInner(),
+                    _buildLeftOuter(),
+                    _buildRightInner(),
+                    _buildRightOuter(),
                   ],
                 );
               } else {
@@ -84,257 +84,248 @@ class InfoPaper extends StatelessWidget {
     );
   }
 
-  Widget _centerStatic() {
-    return Positioned(
-      left: 80,
-      child: Column(
-        children: <Widget>[
-          _buildCenter1Top(),
-          _buildCenter1(),
-          _buildCenter1Bottom(),
-        ],
-      ),
-    );
-  }
-
   Widget _centerAnimated() {
     return Center(
       child: Column(
         children: <Widget>[
           Stack(
             children: <Widget>[
-              _buildCenter1Top(),
+              _buildCenterTopInner(),
               if (envelopeController.controller.value <= 1.0 &&
                   envelopeController.controller.value > 1 / 3)
                 Positioned(
                   right: 0.0,
-                  child: _buildRight2(),
+                  child: _buildSideOuter(),
                 ),
               if (envelopeController.controller.value <= 1.0 &&
                   envelopeController.controller.value > 1 / 3)
                 Positioned(
                   left: 0.0,
-                  child: _buildLeft2(),
+                  child: _buildSideOuter(),
                 ),
             ],
           ),
           if (envelopeController.controller.value >= 5 / 6)
-            _bottomTwo2Animation(
-              child: _center3Part(),
+            _bottomTwoOuterAnimation(
+              child: _buildCenterTopOuter(),
             ),
           if (envelopeController.controller.value < 5 / 6)
-            _bottomTwo1Animation(
+            _bottomTwoInnerAnimation(
               child: Stack(
                 children: <Widget>[
-                  _buildCenter1(),
+                  _buildCenterInner(),
                   if (envelopeController.controller.value < 5 / 6 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       left: 0.0,
-                      child: _buildLeft2(),
+                      child: _buildSideOuter(),
                     ),
                   if (envelopeController.controller.value < 5 / 6 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       right: 0.0,
-                      child: _buildRight2(),
+                      child: _buildSideOuter(),
                     ),
                   if (envelopeController.controller.value >= 4 / 6)
-                    _center2Part()
+                    _buildCenterOuter()
                 ],
               ),
             ),
           if (envelopeController.controller.value < 0.5)
-            _bottomOne1Animation(
+            _bottomOneInnerAnimation(
               child: Stack(
                 children: <Widget>[
-                  _buildCenter1Bottom(),
+                  _buildCenterBottomInner(),
                   if (envelopeController.controller.value < 7 / 12 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       left: 0.0,
-                      child: _buildLeft2(),
+                      child: _buildSideOuter(),
                     ),
                   if (envelopeController.controller.value < 7 / 12 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       right: 0.0,
-                      child: _buildRight2(),
+                      child: _buildSideOuter(),
                     ),
                 ],
               ),
             ),
           if (envelopeController.controller.value >= 0.5 &&
               envelopeController.controller.value < 4 / 6)
-            _bottomOne2Animation(child: _center2Part())
+            _bottomOneOuterAnimation(child: _buildCenterOuter())
         ],
       ),
     );
   }
 
-  Widget _left1() {
+  Widget _centerStatic() {
+    return Positioned(
+      left: size / 4.5,
+      child: Column(
+        children: <Widget>[
+          _buildCenterTopInner(),
+          _buildCenterInner(),
+          _buildCenterBottomInner(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLeftInner() {
     return Positioned(
       left: 0.0,
-      child: _left1Animation(
-        child: _buildLeft1(),
+      child: _leftInnerAnimation(
+        child: _leftInner(),
       ),
     );
   }
 
-  Widget _left2() {
+  Widget _buildLeftOuter() {
     return Positioned(
       left: 0.0,
-      child: _left2Animation(
-        child: _buildLeft2(),
+      child: _leftOuterAnimation(
+        child: _buildSideOuter(),
       ),
     );
   }
 
-  Widget _left1Animation({Widget child}) {
-    return Transform(
+  Widget _leftInnerAnimation({Widget child}) {
+    return _sideAnimation(
+      value: -envelopeController.sideInnerAnimation.value,
       alignment: Alignment.centerRight,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateY(-envelopeController.side1Animation.value),
       child: child,
     );
   }
 
-  Widget _left2Animation({Widget child}) {
-    return Transform(
+  Widget _leftOuterAnimation({Widget child}) {
+    return _sideAnimation(
+      value: -envelopeController.sideOuterAnimation.value,
       alignment: Alignment.centerRight,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateY(-envelopeController.side2Animation.value),
       child: child,
     );
   }
 
-  Widget _right1() {
+  Widget _buildRightInner() {
     return Positioned(
       right: 0.0,
-      child: _right1Animation(
-        child: _buildRight1(),
+      child: _rightInnerAnimation(
+        child: _rightInner(),
       ),
     );
   }
 
-  Widget _right2() {
+  Widget _buildRightOuter() {
     return Positioned(
       right: 0.0,
-      child: _right2Animation(
-        child: _buildRight2(),
+      child: _rightOuterAnimation(
+        child: _buildSideOuter(),
       ),
     );
   }
 
-  Widget _right1Animation({Widget child}) {
-    return Transform(
+  Widget _rightInnerAnimation({Widget child}) {
+    return _sideAnimation(
+      value: envelopeController.sideInnerAnimation.value,
       alignment: Alignment.centerLeft,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateY(envelopeController.side1Animation.value),
       child: child,
     );
   }
 
-  Widget _right2Animation({Widget child}) {
-    return Transform(
+  Widget _rightOuterAnimation({Widget child}) {
+    return _sideAnimation(
+      value: envelopeController.sideOuterAnimation.value,
       alignment: Alignment.centerLeft,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateY(envelopeController.side2Animation.value),
       child: child,
     );
   }
 
-  Widget _bottomOne1Animation({Widget child}) {
+  Widget _sideAnimation({Widget child, Alignment alignment, double value}) {
+    return Transform(
+      alignment: alignment,
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(value),
+      child: child,
+    );
+  }
+
+  Widget _bottomOneInnerAnimation({Widget child}) {
+    return _bottomAnimation(
+      value: envelopeController.bottomOneInnerAnimation.value,
+      child: child,
+    );
+  }
+
+  Widget _bottomOneOuterAnimation({Widget child}) {
+    return _bottomAnimation(
+      value: envelopeController.bottomOneOuterAnimation.value,
+      child: child,
+    );
+  }
+
+  Widget _bottomTwoInnerAnimation({Widget child}) {
+    return _bottomAnimation(
+      value: envelopeController.bottomTwoInnerAnimation.value,
+      child: child,
+    );
+  }
+
+  Widget _bottomTwoOuterAnimation({Widget child}) {
+    return _bottomAnimation(
+      value: envelopeController.bottomTwoOuterAnimation.value,
+      child: child,
+    );
+  }
+
+  Widget _bottomAnimation({Widget child, double value}) {
     return Transform(
       alignment: Alignment.topCenter,
       transform: Matrix4.identity()
         ..setEntry(3, 2, 0.001)
-        ..rotateX(-envelopeController.bottomOne1Animation.value),
+        ..rotateX(-value),
       child: child,
     );
   }
 
-  Widget _bottomOne2Animation({Widget child}) {
-    return Transform(
-      alignment: Alignment.topCenter,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateX(-envelopeController.bottomOne2Animation.value),
-      child: child,
-    );
+  Widget _buildCenterTopInner() {
+    return _centerInner(Alignment.topCenter);
   }
 
-  Widget _bottomTwo1Animation({Widget child}) {
-    return Transform(
-      alignment: Alignment.topCenter,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateX(-envelopeController.bottomTwo1Animation.value),
-      child: child,
-    );
+  Widget _buildCenterInner() {
+    return _centerInner(Alignment.center);
   }
 
-  Widget _bottomTwo2Animation({Widget child}) {
-    return Transform(
-      alignment: Alignment.topCenter,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateX(-envelopeController.bottomTwo2Animation.value),
-      child: child,
-    );
+  Widget _buildCenterBottomInner() {
+    return _centerInner(Alignment.bottomCenter);
   }
 
-  Widget _buildCenter1Top() {
+  Widget _centerInner(Alignment alignment) {
     final ContentWidget widget = ContentWidget();
     final child = ClipRect(
       child: Align(
-        alignment: Alignment.topCenter,
+        alignment: alignment,
         heightFactor: 1 / 3,
         widthFactor: 5 / 9,
         child: widget,
       ),
     );
-
     return child;
   }
 
-  Widget _buildCenter1() {
-    final ContentWidget widget = ContentWidget();
-    final child = ClipRect(
-      child: Align(
-        alignment: Alignment.center,
-        heightFactor: 1 / 3,
-        widthFactor: 5 / 9,
-        child: widget,
-      ),
-    );
-
-    return child;
+  Widget _leftInner() {
+    return _sideInner(Alignment.centerLeft);
   }
 
-  Widget _buildCenter1Bottom() {
-    final ContentWidget widget = ContentWidget();
-    final child = ClipRect(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        heightFactor: 1 / 3,
-        widthFactor: 5 / 9,
-        child: widget,
-      ),
-    );
-
-    return child;
+  Widget _rightInner() {
+    return _sideInner(Alignment.centerRight);
   }
 
-  Widget _buildLeft1() {
+  Widget _sideInner(Alignment alignment) {
     final ContentWidget widget = ContentWidget();
     final child = ClipRect(
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: alignment,
         widthFactor: 2 / 9,
         child: widget,
       ),
@@ -342,46 +333,26 @@ class InfoPaper extends StatelessWidget {
     return child;
   }
 
-  Widget _buildRight1() {
-    final ContentWidget widget = ContentWidget();
-    final child = ClipRect(
-      child: Align(
-        alignment: Alignment.centerRight,
-        widthFactor: 2 / 9,
-        child: widget,
-      ),
-    );
-    return child;
-  }
-
-  Widget _buildLeft2() {
-    return _side2Part();
-  }
-
-  Widget _buildRight2() {
-    return _side2Part();
-  }
-
-  Widget _side2Part() {
+  Widget _buildSideOuter() {
     return Container(
-      width: 80,
-      height: 360,
+      width: size / 4.5,
+      height: size,
       color: Colors.blue[800],
     );
   }
 
-  Widget _center2Part() {
+  Widget _buildCenterOuter() {
     return Container(
-      width: 200,
-      height: 120,
+      width: size / 1.8,
+      height: size / 3,
       color: Colors.blue[700],
     );
   }
 
-  Widget _center3Part() {
+  Widget _buildCenterTopOuter() {
     return Container(
-      width: 200,
-      height: 120,
+      width: size / 1.8,
+      height: size / 3,
       color: Colors.blue[900],
       child: Center(
         child: Transform(
@@ -399,22 +370,22 @@ class InfoPaper extends StatelessWidget {
 
 class InfoPaperAnimation {
   final AnimationController controller;
-  final Animation<double> side1Animation;
-  final Animation<double> side2Animation;
-  final Animation<double> bottomOne1Animation;
-  final Animation<double> bottomOne2Animation;
-  final Animation<double> bottomTwo1Animation;
-  final Animation<double> bottomTwo2Animation;
+  final Animation<double> sideInnerAnimation;
+  final Animation<double> sideOuterAnimation;
+  final Animation<double> bottomOneInnerAnimation;
+  final Animation<double> bottomOneOuterAnimation;
+  final Animation<double> bottomTwoInnerAnimation;
+  final Animation<double> bottomTwoOuterAnimation;
 
   InfoPaperAnimation(this.controller)
-      : side1Animation = _create1Animation(controller, 0.0, 1 / 6),
-        side2Animation = _create2Animation(controller, 1 / 6, 1 / 3),
-        bottomOne1Animation = _create1Animation(controller, 1 / 3, 0.5),
-        bottomOne2Animation = _create2Animation(controller, 0.5, 2 / 3),
-        bottomTwo1Animation = _create1Animation(controller, 2 / 3, 5 / 6),
-        bottomTwo2Animation = _create2Animation(controller, 5 / 6, 1.0);
+      : sideInnerAnimation = _createInnerAnimation(controller, 0.0, 1 / 6),
+        sideOuterAnimation = _createOuterAnimation(controller, 1 / 6, 1 / 3),
+        bottomOneInnerAnimation = _createInnerAnimation(controller, 1 / 3, 0.5),
+        bottomOneOuterAnimation = _createOuterAnimation(controller, 0.5, 2 / 3),
+        bottomTwoInnerAnimation = _createInnerAnimation(controller, 2 / 3, 5 / 6),
+        bottomTwoOuterAnimation = _createOuterAnimation(controller, 5 / 6, 1.0);
 
-  static Animation<double> _create1Animation(
+  static Animation<double> _createInnerAnimation(
       AnimationController controller, double from, double to) {
     return Tween<double>(begin: 0.0, end: pi / 2).animate(
       CurvedAnimation(
@@ -427,7 +398,7 @@ class InfoPaperAnimation {
     );
   }
 
-  static Animation<double> _create2Animation(
+  static Animation<double> _createOuterAnimation(
       AnimationController controller, double from, double to) {
     return Tween<double>(begin: pi / 2, end: pi).animate(
       CurvedAnimation(
@@ -452,26 +423,13 @@ class ContentWidget extends StatelessWidget {
       height: 360,
       width: 360,
       color: Colors.blue[100],
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Image.asset(
-            'open_eyes.png',
-            width: 250,
-          ),
-          Image.asset(
-            'logo.png',
-            width: 250,
-          )
-        ],
+      child: Container(
+        margin: EdgeInsets.all(26.0),
+        child: Image.asset(
+          'qr1_example.png',
+          fit: BoxFit.fill,
+        ),
       ),
-//      child: Container(
-//        margin: EdgeInsets.all(26.0),
-//        child: Image.asset(
-//          'qr1_example.png',
-//          fit: BoxFit.fill,
-//        ),
-//      ),
     );
   }
 }
