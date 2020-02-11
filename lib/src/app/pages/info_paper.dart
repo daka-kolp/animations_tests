@@ -62,20 +62,21 @@ class InfoPaper extends StatelessWidget {
           width: size,
           height: MediaQuery.of(context).size.height,
           child: AnimatedBuilder(
+            child: ContentWidget(),
             animation: envelopeController.controller,
             builder: (context, child) {
               if (envelopeController.controller.value < 1 / 3) {
                 return Stack(
                   children: <Widget>[
-                    _centerStatic(),
-                    _buildLeftInner(),
+                    _centerStatic(child),
+                    _buildLeftInner(child),
                     _buildLeftOuter(),
-                    _buildRightInner(),
+                    _buildRightInner(child),
                     _buildRightOuter(),
                   ],
                 );
               } else {
-                return _centerAnimated();
+                return _centerAnimated(child);
               }
             },
           ),
@@ -84,13 +85,13 @@ class InfoPaper extends StatelessWidget {
     );
   }
 
-  Widget _centerAnimated() {
+  Widget _centerAnimated(Widget child) {
     return Center(
       child: Column(
         children: <Widget>[
           Stack(
             children: <Widget>[
-              _buildCenterTopInner(),
+              _buildCenterTopInner(child),
               if (envelopeController.controller.value <= 1.0 &&
                   envelopeController.controller.value > 1 / 3)
                 Positioned(
@@ -113,7 +114,7 @@ class InfoPaper extends StatelessWidget {
             _bottomTwoInnerAnimation(
               child: Stack(
                 children: <Widget>[
-                  _buildCenterInner(),
+                  _buildCenterInner(child),
                   if (envelopeController.controller.value < 5 / 6 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
@@ -135,7 +136,7 @@ class InfoPaper extends StatelessWidget {
             _bottomOneInnerAnimation(
               child: Stack(
                 children: <Widget>[
-                  _buildCenterBottomInner(),
+                  _buildCenterBottomInner(child),
                   if (envelopeController.controller.value < 7 / 12 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
@@ -159,24 +160,24 @@ class InfoPaper extends StatelessWidget {
     );
   }
 
-  Widget _centerStatic() {
+  Widget _centerStatic(Widget child) {
     return Positioned(
       left: size / 4.5,
       child: Column(
         children: <Widget>[
-          _buildCenterTopInner(),
-          _buildCenterInner(),
-          _buildCenterBottomInner(),
+          _buildCenterTopInner(child),
+          _buildCenterInner(child),
+          _buildCenterBottomInner(child),
         ],
       ),
     );
   }
 
-  Widget _buildLeftInner() {
+  Widget _buildLeftInner(Widget child) {
     return Positioned(
       left: 0.0,
       child: _leftInnerAnimation(
-        child: _leftInner(),
+        child: _leftInner(child),
       ),
     );
   }
@@ -206,11 +207,11 @@ class InfoPaper extends StatelessWidget {
     );
   }
 
-  Widget _buildRightInner() {
+  Widget _buildRightInner(Widget child) {
     return Positioned(
       right: 0.0,
       child: _rightInnerAnimation(
-        child: _rightInner(),
+        child: _rightInner(child),
       ),
     );
   }
@@ -288,49 +289,45 @@ class InfoPaper extends StatelessWidget {
     );
   }
 
-  Widget _buildCenterTopInner() {
-    return _centerInner(Alignment.topCenter);
+  Widget _buildCenterTopInner(Widget child) {
+    return _centerInner(Alignment.topCenter, child);
   }
 
-  Widget _buildCenterInner() {
-    return _centerInner(Alignment.center);
+  Widget _buildCenterInner(Widget child) {
+    return _centerInner(Alignment.center, child);
   }
 
-  Widget _buildCenterBottomInner() {
-    return _centerInner(Alignment.bottomCenter);
+  Widget _buildCenterBottomInner(Widget child) {
+    return _centerInner(Alignment.bottomCenter, child);
   }
 
-  Widget _centerInner(Alignment alignment) {
-    final ContentWidget widget = ContentWidget();
-    final child = ClipRect(
+  Widget _centerInner(Alignment alignment, Widget child) {
+    return ClipRect(
       child: Align(
         alignment: alignment,
         heightFactor: 1 / 3,
         widthFactor: 5 / 9,
-        child: widget,
+        child: child,
       ),
     );
-    return child;
   }
 
-  Widget _leftInner() {
-    return _sideInner(Alignment.centerLeft);
+  Widget _leftInner(Widget child) {
+    return _sideInner(Alignment.centerLeft, child);
   }
 
-  Widget _rightInner() {
-    return _sideInner(Alignment.centerRight);
+  Widget _rightInner(Widget child) {
+    return _sideInner(Alignment.centerRight, child);
   }
 
-  Widget _sideInner(Alignment alignment) {
-    final ContentWidget widget = ContentWidget();
-    final child = ClipRect(
+  Widget _sideInner(Alignment alignment, Widget child) {
+    return ClipRect(
       child: Align(
         alignment: alignment,
         widthFactor: 2 / 9,
-        child: widget,
+        child: child,
       ),
     );
-    return child;
   }
 
   Widget _buildSideOuter() {
