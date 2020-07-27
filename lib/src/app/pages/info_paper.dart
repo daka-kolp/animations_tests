@@ -11,6 +11,7 @@ class InfoPaperAnimator extends StatefulWidget {
 class _InfoPaperAnimatorState extends State<InfoPaperAnimator>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
+  final double size = 360;
 
   @override
   void initState() {
@@ -29,6 +30,34 @@ class _InfoPaperAnimatorState extends State<InfoPaperAnimator>
 
   @override
   Widget build(BuildContext context) {
+    Widget sideOuter = Container(
+      width: size / 4.5,
+      height: size,
+      color: Colors.blue[800],
+    );
+
+    Widget centerOuter = Container(
+      width: size / 1.8,
+      height: size / 3,
+      color: Colors.blue[700],
+    );
+
+    Widget centerTopOuter = Container(
+      width: size / 1.8,
+      height: size / 3,
+      color: Colors.blue[900],
+      child: Center(
+        child: Transform(
+          transform: Matrix4.rotationX(pi),
+          alignment: Alignment.center,
+          child: Text(
+            'Open me',
+            style: TextStyle(fontSize: 20.0, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+
     return GestureDetector(
       onTap: () {
         if (_controller.status == AnimationStatus.completed) {
@@ -40,6 +69,10 @@ class _InfoPaperAnimatorState extends State<InfoPaperAnimator>
       },
       child: InfoPaper(
         controller: _controller,
+        size: size,
+        sideOuter: sideOuter,
+        centerOuter: centerOuter,
+        centerTopOuter: centerTopOuter,
       ),
     );
   }
@@ -47,10 +80,19 @@ class _InfoPaperAnimatorState extends State<InfoPaperAnimator>
 
 class InfoPaper extends StatelessWidget {
   final InfoPaperAnimation envelopeController;
-  final double size = 360;
+  final double size;
+  final Widget sideOuter;
+  final Widget centerOuter;
+  final Widget centerTopOuter;
 
-  InfoPaper({Key key, AnimationController controller})
-      : envelopeController = InfoPaperAnimation(controller),
+  InfoPaper({
+    Key key,
+    AnimationController controller,
+    @required this.size,
+    @required this.sideOuter,
+    @required this.centerOuter,
+    @required this.centerTopOuter,
+  })  : envelopeController = InfoPaperAnimation(controller),
         super(key: key);
 
   @override
@@ -62,7 +104,9 @@ class InfoPaper extends StatelessWidget {
           width: size,
           height: MediaQuery.of(context).size.height,
           child: AnimatedBuilder(
-            child: ContentWidget(),
+            child: ContentWidget(
+              size: size,
+            ),
             animation: envelopeController.controller,
             builder: (context, child) {
               if (envelopeController.controller.value < 1 / 3) {
@@ -96,19 +140,19 @@ class InfoPaper extends StatelessWidget {
                   envelopeController.controller.value > 1 / 3)
                 Positioned(
                   right: 0.0,
-                  child: _buildSideOuter(),
+                  child: sideOuter,
                 ),
               if (envelopeController.controller.value <= 1.0 &&
                   envelopeController.controller.value > 1 / 3)
                 Positioned(
                   left: 0.0,
-                  child: _buildSideOuter(),
+                  child: sideOuter,
                 ),
             ],
           ),
           if (envelopeController.controller.value >= 5 / 6)
             _bottomTwoOuterAnimation(
-              child: _buildCenterTopOuter(),
+              child: centerTopOuter,
             ),
           if (envelopeController.controller.value < 5 / 6)
             _bottomTwoInnerAnimation(
@@ -119,16 +163,16 @@ class InfoPaper extends StatelessWidget {
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       left: 0.0,
-                      child: _buildSideOuter(),
+                      child: sideOuter,
                     ),
                   if (envelopeController.controller.value < 5 / 6 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       right: 0.0,
-                      child: _buildSideOuter(),
+                      child: sideOuter,
                     ),
                   if (envelopeController.controller.value >= 4 / 6)
-                    _buildCenterOuter()
+                    centerOuter
                 ],
               ),
             ),
@@ -141,20 +185,20 @@ class InfoPaper extends StatelessWidget {
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       left: 0.0,
-                      child: _buildSideOuter(),
+                      child: sideOuter,
                     ),
                   if (envelopeController.controller.value < 7 / 12 &&
                       envelopeController.controller.value > 1 / 3)
                     Positioned(
                       right: 0.0,
-                      child: _buildSideOuter(),
+                      child: sideOuter,
                     ),
                 ],
               ),
             ),
           if (envelopeController.controller.value >= 0.5 &&
               envelopeController.controller.value < 4 / 6)
-            _bottomOneOuterAnimation(child: _buildCenterOuter())
+            _bottomOneOuterAnimation(child: centerOuter)
         ],
       ),
     );
@@ -186,7 +230,7 @@ class InfoPaper extends StatelessWidget {
     return Positioned(
       left: 0.0,
       child: _leftOuterAnimation(
-        child: _buildSideOuter(),
+        child: sideOuter,
       ),
     );
   }
@@ -220,7 +264,7 @@ class InfoPaper extends StatelessWidget {
     return Positioned(
       right: 0.0,
       child: _rightOuterAnimation(
-        child: _buildSideOuter(),
+        child: sideOuter,
       ),
     );
   }
@@ -329,40 +373,6 @@ class InfoPaper extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildSideOuter() {
-    return Container(
-      width: size / 4.5,
-      height: size,
-      color: Colors.blue[800],
-    );
-  }
-
-  Widget _buildCenterOuter() {
-    return Container(
-      width: size / 1.8,
-      height: size / 3,
-      color: Colors.blue[700],
-    );
-  }
-
-  Widget _buildCenterTopOuter() {
-    return Container(
-      width: size / 1.8,
-      height: size / 3,
-      color: Colors.blue[900],
-      child: Center(
-        child: Transform(
-          transform: Matrix4.rotationX(pi),
-          alignment: Alignment.center,
-          child: Text(
-            'Open me',
-            style: TextStyle(fontSize: 20.0, color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class InfoPaperAnimation {
@@ -379,7 +389,8 @@ class InfoPaperAnimation {
         sideOuterAnimation = _createOuterAnimation(controller, 1 / 6, 1 / 3),
         bottomOneInnerAnimation = _createInnerAnimation(controller, 1 / 3, 0.5),
         bottomOneOuterAnimation = _createOuterAnimation(controller, 0.5, 2 / 3),
-        bottomTwoInnerAnimation = _createInnerAnimation(controller, 2 / 3, 5 / 6),
+        bottomTwoInnerAnimation =
+            _createInnerAnimation(controller, 2 / 3, 5 / 6),
         bottomTwoOuterAnimation = _createOuterAnimation(controller, 5 / 6, 1.0);
 
   static Animation<double> _createInnerAnimation(
@@ -410,6 +421,10 @@ class InfoPaperAnimation {
 }
 
 class ContentWidget extends StatelessWidget {
+  final double size;
+
+  const ContentWidget({Key key, this.size}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return _buildContent();
@@ -417,8 +432,8 @@ class ContentWidget extends StatelessWidget {
 
   Widget _buildContent() {
     return Container(
-      height: 360,
-      width: 360,
+      height: size,
+      width: size,
       color: Colors.blue[100],
       child: Container(
         margin: EdgeInsets.all(26.0),
